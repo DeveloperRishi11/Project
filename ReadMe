@@ -1,0 +1,137 @@
+FastAPI Ecommerce Backend
+A complete FastAPI backend application for an ecommerce platform built with Python, FastAPI, and MongoDB.
+
+Features
+Product Management: Create and list products with sizes and quantities
+Order Management: Create orders and retrieve user order history
+Search & Filtering: Filter products by name and size
+Pagination: Support for pagination on all list endpoints
+MongoDB Integration: Uses MongoDB for data persistence
+Input Validation: Comprehensive request/response validation with Pydantic
+API Endpoints
+Products
+POST /products - Create a new product
+GET /products - List products with optional filtering and pagination
+Orders
+POST /orders - Create a new order
+GET /orders/{user_id} - Get user's order history with pagination
+Health Check
+GET / - Root endpoint
+GET /health - Health check with database connectivity
+Setup Instructions
+Prerequisites
+Python 3.10+ (3.10, 3.11, 3.12, or 3.13)
+MongoDB (local installation or MongoDB Atlas)
+Installation
+Clone/Create the project directory
+bash
+mkdir fastapi-ecommerce
+cd fastapi-ecommerce
+Create virtual environment
+bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+Install dependencies
+bash
+pip install -r requirements.txt
+Set up MongoDB Option A: Local MongoDB
+Install MongoDB locally
+Start MongoDB service
+Default connection: mongodb://localhost:27017
+Option B: MongoDB Atlas (Free Tier)
+Create account at https://www.mongodb.com/atlas
+Create a free cluster
+Get connection string and set as environment variable:
+bash
+export MONGO_URL="mongodb+srv://username:password@cluster.mongodb.net/ecommerce"
+Run the application
+bash
+python main.py
+Or using uvicorn directly:
+bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+Access the API
+API: http://localhost:8000
+Interactive docs: http://localhost:8000/docs
+ReDoc: http://localhost:8000/redoc
+API Usage Examples
+Create a Product
+bash
+curl -X POST "http://localhost:8000/products" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Sample T-Shirt",
+    "price": 100.0,
+    "sizes": [
+      {"size": "small", "quantity": 10},
+      {"size": "large", "quantity": 5}
+    ]
+  }'
+List Products
+bash
+curl "http://localhost:8000/products?limit=10&offset=0"
+Filter Products by Name
+bash
+curl "http://localhost:8000/products?name=shirt&limit=5"
+Create an Order
+bash
+curl -X POST "http://localhost:8000/orders" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": "user_1",
+    "items": [
+      {"product_id": "PRODUCT_ID_HERE", "qty": 2}
+    ]
+  }'
+Get User Orders
+bash
+curl "http://localhost:8000/orders/user_1?limit=5&offset=0"
+Database Schema
+Products Collection
+json
+{
+  "_id": "ObjectId",
+  "name": "string",
+  "price": "float",
+  "sizes": [
+    {"size": "string", "quantity": "int"}
+  ],
+  "created_at": "datetime"
+}
+Orders Collection
+json
+{
+  "_id": "ObjectId",
+  "user_id": "string",
+  "items": [
+    {
+      "product_id": "string",
+      "qty": "int",
+      "price": "float",
+      "item_total": "float"
+    }
+  ],
+  "total": "float",
+  "created_at": "datetime"
+}
+Deployment
+Railway/Render Deployment
+Push your code to a Git repository
+Connect to Railway/Render
+Set environment variables:
+MONGO_URL: Your MongoDB connection string
+Deploy and get your application URL
+Environment Variables
+MONGO_URL: MongoDB connection string (default: mongodb://localhost:27017)
+Development Notes
+The application follows FastAPI best practices
+Uses Pydantic for request/response validation
+Implements proper error handling
+Supports pagination for all list endpoints
+MongoDB queries are optimized for performance
+Code is well-structured and documented
+Testing
+Test your API endpoints using the interactive docs at /docs or use tools like Postman, curl, or httpie.
+
+The application includes proper error handling and will return appropriate HTTP status codes and error messages.
+
